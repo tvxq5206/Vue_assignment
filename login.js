@@ -1,27 +1,33 @@
 import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
 
 createApp({
-    data() {
-        return {
-            user:
-            {
-                username: "",
-                password: ""
-            },
-        }
+  data() {
+    return {
+      apiUrl: "https://vue3-course-api.hexschool.io/v2",
+      user: {
+        username: "",
+        password: "",
+      },
+    };
+  },
+  methods: {
+    login() {
+      const api = `${this.apiUrl}/admin/signin`;
+
+      axios
+        .post(api, this.user)
+        .then((response) => {
+          const { token, expired } = response.data;
+          // 寫入 cookie token
+          // expires 設置有效時間
+          document.cookie = `hexToken=${token};expires=${new Date(
+            expired
+          )}; path=/`;
+          window.location = "product.html";
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     },
-    methods: {
-        login() {
-            const url = "https://ec-course-api.hexschool.io/v2";
-            axios.post(`${url}/admin/signin`, this.user)
-                .then((res) => {
-                    const { token, expired } = res.data;
-                    document.cookie = `hexToken=${token};expires=${new Date(expired)}; path=/`;
-                    window.location = 'index.html';
-                })
-                .catch((error) => {
-                    alert(error.response.data.message);
-                })
-        },
-    },
+  },
 }).mount("#app");
