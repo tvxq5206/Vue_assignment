@@ -26,7 +26,7 @@ createApp({
                 this.getData();
               })
               .catch((error) => {
-                alert(error.response.data.message);
+                alert(error.data.message);
                 window.location = "login.html";
               });
           },
@@ -40,7 +40,7 @@ createApp({
                 this.products = res.data.products;
               })
               .catch((err) => {
-                alert(err.response.data.message);
+                alert(err.data.message);
               });
         },
         //修改產品資料
@@ -56,13 +56,12 @@ createApp({
 
            axios[http](url, { data: this.tempProduct })
            .then((response) => {
-            console.log(response.data.message)
             alert(response.data.message);
             modalProduct.hide();
             this.getData();
            })
            .catch((err) => {
-            alert(err.response.data.message);
+            alert(err.data.message);
            })
 
         },
