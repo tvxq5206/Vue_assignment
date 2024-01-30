@@ -1,7 +1,8 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 
-let modalProduct = null;
-let modalDel = null;
+import pagination from './pagination.js';
+import productModal from './productModal.js';
+import deleteModal from './deleteModal.js';
 
 createApp({
     data() {
@@ -13,6 +14,7 @@ createApp({
         tempProduct: {
             imagesUrl: [],
         },
+        pages: {},
       }
     },
     methods: {
@@ -30,16 +32,19 @@ createApp({
               });
           },
           //宣告一個取得並渲染資料的函式
-        getData() {
-            const url = `${this.apiUrl}/api/${this.apiPath}/admin/products/all`;
+        getData(page = 1) {
+            const url = `${this.apiUrl}/api/${this.apiPath}/admin/products?page=${page}`;
             //使用axios套件get資料
             axios
               .get(url)
               .then((res) => {
                 this.products = res.data.products;
+                this.pages = res.data.pagination;
+                console.log(res.data.products);
               })
               .catch((err) => {
                 alert(err.data.message);
+                window.location = 'login.html'
               });
         },
         //修改產品資料
@@ -56,28 +61,36 @@ createApp({
            axios[http](url, { data: this.tempProduct })
            .then((response) => {
             alert(response.data.message);
-            modalProduct.hide();
             this.getData();
+            this.$refs.pModal.closeModal();
+            //modalProduct.hide();
+            this.tempProduct = {};
            })
            .catch((err) => {
             alert(err.data.message);
            })
 
         },
-        openModal(isNew, product){
-           if (isNew === 'new'){
+        openModal(status, product){
+           if (status === 'new'){
             this.tempProduct = {
                 imagesUrl: [],
             };
             this.isNew = true;
-            modalProduct.show();
-           }else if(isNew === 'edit'){
+            this.$refs.pModal.openModal();
+           // modalProduct.show();
+           }else if(status === 'edit'){
             this.tempProduct = { ...product };
+            if (!Array.isArray(this.tempProduct.imagesUrl)) {
+              this.tempProduct.imagesUrl = [];
+            }
             this.isNew = false;
-            modalProduct.show();
-           }else if(isNew === 'delete'){
+            this.$refs.pModal.openModal();
+            //modalProduct.show();
+           }else if(status === 'delete'){
             this.tempProduct = { ...product };
-            modalDel.show();
+            this.$refs.delModal.openDelModal();
+            //modalDel.show();
            }
         },
         delProduct(){
@@ -85,7 +98,8 @@ createApp({
             axios.delete(url)
             .then((response) => {
                 alert(response.data.message);
-                modalDel.hide();
+                this.$refs.delModal.closeDelModal();
+                //modalDel.hide();
                 this.getData();
             })
             .catch((err) => {
@@ -98,19 +112,6 @@ createApp({
         }
     },
     mounted() {
-      //用element Id抓modal
-        modalProduct = new bootstrap.Modal(
-            document.getElementById('productModal'), 
-        {
-            keyboard: false,
-        }
-        );
-        modalDel = new bootstrap.Modal(
-            document.getElementById('delProductModal'), 
-        {
-            keyboard: false,
-        }
-        );
         //取出token
         const token = document.cookie.replace(
             /(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/,
@@ -119,5 +120,10 @@ createApp({
         axios.defaults.headers.common["Authorization"] = token;
 
         this.checkAdmin();
+    },
+    components: {
+      pagination,
+      productModal,
+      deleteModal
     }
   }).mount('#app')
