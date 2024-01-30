@@ -28,7 +28,7 @@ createApp({
               })
               .catch((error) => {
                 alert(error.data.message);
-                window.location = "login.html";
+                window.location = "login_week4.html";
               });
           },
           //宣告一個取得並渲染資料的函式
