@@ -40,7 +40,6 @@ createApp({
               .then((res) => {
                 this.products = res.data.products;
                 this.pages = res.data.pagination;
-                console.log(res.data.products);
               })
               .catch((err) => {
                 alert(err.data.message);
@@ -59,8 +58,8 @@ createApp({
            }
 
            axios[http](url, { data: this.tempProduct })
-           .then((response) => {
-            alert(response.data.message);
+           .then((res) => {
+            alert(res.data.message)
             this.getData();
             this.$refs.pModal.closeModal();
             //modalProduct.hide();

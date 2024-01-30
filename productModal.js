@@ -3,10 +3,11 @@ export default {
   data(){
     return {
       isNew: false,
-      modalProduct: null
+      modalProduct: null,
+      imagesUrl: [],
     }
   },
-  props: ['updateProduct', 'tempProduct'],
+  props: ['updateProduct', 'tempProduct', 'createImages'],
   template: `<div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
   aria-hidden="true">
 <div class="modal-dialog modal-xl">
