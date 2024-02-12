@@ -1,4 +1,4 @@
-import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
+const { createApp } = Vue;
 
 //定義規則
 Object.keys(VeeValidateRules).forEach((rule) => {
@@ -89,6 +89,7 @@ const app = createApp({
       this.status.addToCartLoading = product_id;
       axios.post(url, { data: order }).then((res) => {
         this.status.addToCartLoading = "";
+        alert(res.data.message);
         this.getCart();
         this.$refs.userProductModal.closeModal();
       });
@@ -109,6 +110,7 @@ const app = createApp({
       const url = `${this.apiUrl}/api/${this.apiPath}/cart/${id}`;
       this.status.changeQtyLoading = id;
       axios.delete(url).then((res) => {
+        alert(res.data.message);
         this.status.changeQtyLoading = "";
         this.getCart();
       });
@@ -116,6 +118,7 @@ const app = createApp({
     deleteAllCart() {
       const url = `${this.apiUrl}/api/${this.apiPath}/carts`;
       axios.delete(url).then((res) => {
+        alert(res.data.message);
         this.getCart();
       });
     },
@@ -127,10 +130,21 @@ const app = createApp({
     },
     createOrder() {
       const url = `${this.apiUrl}/api/${this.apiPath}/order`;
-      const order = this.form;
-      axios.post(url, { data: order }).then((res) => {
-        console.log(res);
-      });
+      const purchaseOrder = this.form;
+      axios
+        .post(url, { data: purchaseOrder })
+        .then((res) => {
+          alert(res.data.message);
+          this.$refs.form.resetForm();
+          this.getCart();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    isPhone(value) {
+      const phoneNumber = /^(09)[0-9]{8}$/;
+      return phoneNumber.test(value) ? true : "需要正確的電話號碼";
     },
   },
   mounted() {

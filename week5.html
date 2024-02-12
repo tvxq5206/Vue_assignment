@@ -123,7 +123,10 @@
                       @click="deleteCartItem(cart.id)"
                       :disabled="status.changeQtyLoading === cart.id"
                     >
-                      <i class="fas fa-spinner fa-pulse"></i>
+                      <i
+                        class="fas fa-spinner fa-pulse"
+                        v-if="status.changeQtyLoading === cart.id"
+                      ></i>
                       x
                     </button>
                   </td>
@@ -173,23 +176,22 @@
             <tfoot>
               <tr>
                 <td colspan="3" class="text-end">總計</td>
-                <td class="text-end">{{ carts.final_total }}</td>
+                <td class="text-end">{{ carts.total }}</td>
               </tr>
-              <tr>
+              <tr v-if="carts.final_total !== carts.total">
                 <td colspan="3" class="text-end text-success">折扣價</td>
-                <td class="text-end text-success">{{ }}</td>
+                <td class="text-end text-success">{{ carts.final_total }}</td>
               </tr>
             </tfoot>
           </table>
         </div>
         <div class="my-5 row justify-content-center">
           <v-form
-            @sumbit="onSubmit"
             ref="form"
             class="col-md-6"
             v-slot="{ errors }"
+            @submit="createOrder"
           >
-            {{ errors }}
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
               <v-field
@@ -200,6 +202,7 @@
                 :class="{ 'is-invalid': errors['email'] }"
                 placeholder="請輸入 Email"
                 rules="email|required"
+                v-model="form.user.email"
               ></v-field>
               <error-message
                 name="email"
@@ -217,6 +220,7 @@
                 :class="{ 'is-invalid': errors['姓名'] }"
                 placeholder="請輸入姓名"
                 rules="required"
+                v-model="form.user.name"
               ></v-field>
               <error-message
                 name="姓名"
@@ -233,6 +237,8 @@
                 class="form-control"
                 :class="{ 'is-invalid': errors['電話'] }"
                 placeholder="請輸入電話"
+                :rules="isPhone"
+                v-model="form.user.tel"
               ></v-field>
               <error-message
                 name="電話"
@@ -250,6 +256,7 @@
                 :class="{ 'is-invalid': errors['地址'] }"
                 placeholder="請輸入地址"
                 rules="required"
+                v-model="form.user.address"
               ></v-field>
               <error-message
                 name="地址"
@@ -264,6 +271,7 @@
                 class="form-control"
                 cols="30"
                 rows="10"
+                v-model="form.message"
               ></textarea>
             </div>
             <div class="text-end">
@@ -329,7 +337,7 @@
       integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
       crossorigin="anonymous"
     ></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.esm-browser.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.12.4/vee-validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.12.4/dist/vee-validate-rules.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.12.4/dist/vee-validate-i18n.min.js"></script>
