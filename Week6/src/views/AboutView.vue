@@ -1,13 +1,3 @@
 <template>
-  <h1>This is About page.</h1>
-  <RouterLink to="/">Home</RouterLink> |
-  <RouterLink to="/about">About</RouterLink>
+  <h2>關於我們</h2>
 </template>
-
-<script>
-export default {
-}
-</script>
-
-<style scoped>
-</style>
